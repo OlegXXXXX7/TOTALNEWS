@@ -142,7 +142,7 @@ def build_caption(title: str, summary: str) -> str:
 
 # ----------------------- АНТИРЕКЛАМА/БАРАХОЛКА ----------------------
 AD_KEYWORDS = re.compile(
-    r"(?i)\b("
+    r"(?i)\b(" 
     r"реклам|промо|партнерск|партнёрск|спонсор|"
     r"скидк|акци[яи]|распродаж|заказ|заказывай|оформить|ждем вас|ждём вас|"
     r"доставк|самовывоз|меню|ассортимент|каталог|"
@@ -156,8 +156,8 @@ AD_KEYWORDS = re.compile(
     r")\b"
 )
 PHONE_RE = re.compile(r"(?<!\d)(?:\+7|8)\s?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}")
-PRICE_RE = re.compile(r"\b\d{2,}[ \u00A0]?(?:₽|руб\.?|рублей)\b", re.IGNORECASE)
-WORKTIME_RE = re.compile(r"\b(?:ежедневно|с\s*\d{1,2}[:\.]\d{2}\s*до\s*\d{1,2}[:\.]\d{2})\b", re.IGNORECASE)
+PRICE_RE = re.compile(r"\b\d{2,}[ \u00A0]?(?:₽|руб\.?)\b", re.IGNORECASE)
+WORKTIME_RE = re.compile(r"\b(?:ежедневно|с\s*\d{1,2}[:\.\d{2}\s*до\s*\d{1,2}[:\.\d{2}])\b", re.IGNORECASE)
 
 def looks_like_ad(t: str) -> bool:
     if not t:
@@ -251,7 +251,7 @@ def normalize_chat_id(chat: Union[int, str]) -> Union[int, str]:
     s = str(chat).strip()
     if not s:
         return s
-    if s.startswith("@"):
+    if s.startswith("@"): 
         return s
     if s.startswith("http://") or s.startswith("https://"):
         try:
@@ -271,7 +271,7 @@ def tg_check_chat(token: str, chat: Union[int, str]) -> bool:
     url = f"https://api.telegram.org/bot{token}/getChat"
     try:
         r = requests.get(url, params={"chat_id": chat_norm}, timeout=15)
-        data = r.json() if r.headers.get("content-type", "").startswith("application/json") else {}
+        data = r.json() if r.headers.get("content-type", "application/json") else {}
         return r.status_code == 200 and data.get("ok")
     except Exception:
         return False
@@ -287,7 +287,7 @@ def tg_send_message(token: str, chat: Union[int, str], plain_text: str) -> bool:
         for _ in range(2):
             try:
                 r = requests.post(url, data={"chat_id": chat_norm, "text": chunk, "disable_web_page_preview": True}, timeout=20)
-                js = r.json() if r.headers.get("content-type", "").startswith("application/json") else {}
+                js = r.json() if r.headers.get("content-type", "application/json") else {}
                 if r.status_code == 200 and js.get("ok"):
                     break
                 time.sleep(0.5)
@@ -310,7 +310,7 @@ def tg_send_media_upload(token: str, chat: Union[int, str], media: Tuple[str, by
     for _ in range(2):
         try:
             r = requests.post(url, data=form, files=files, timeout=60)
-            js = r.json() if r.headers.get("content-type", "").startswith("application/json") else {}
+            js = r.json() if r.headers.get("content-type", "application/json") else {}
             if r.status_code == 200 and js.get("ok"):
                 return True
             time.sleep(0.6)
@@ -320,7 +320,7 @@ def tg_send_media_upload(token: str, chat: Union[int, str], media: Tuple[str, by
 
 # ------------- Загрузка Telegram /s/<channel> без логина -------------
 def _tg_urls(handle: str) -> List[str]:
-    h = handle.strip().lstrip("@")
+    h = handle.strip().lstrip("@").
     return [
         f"https://t.me/s/{h}",
         f"https://r.jina.ai/https://t.me/s/{h}",
@@ -349,7 +349,7 @@ def _extract_posts_from_html(html: str) -> List[Dict[str, Any]]:
         photos: List[str] = []
         for a in msg.select("a.tgme_widget_message_photo_wrap"):
             style = a.get("style") or ""
-            m = re.search(r"background-image:\s*url\(['\"]?(https?://[^'\"\)]+)", style)
+            m = re.search(r"background-image:\s*url\(['\"]?(https?://[^'\"")]+)", style)
             if m:
                 photos.append(m.group(1))
         videos: List[str] = []
@@ -382,7 +382,7 @@ def fetch_tg_channel_posts_no_login(handles: List[str]) -> List[Dict[str, Any]]:
     since = utcnow() - timedelta(hours=FRESH_HOURS)
     headers = {"User-Agent": USER_AGENT, "Accept-Language": "ru,en;q=0.9"}
     for handle in handles:
-        h = handle.strip().lstrip("@")
+        h = handle.strip().lstrip("@").
         if not h:
             continue
         total = fresh = 0
