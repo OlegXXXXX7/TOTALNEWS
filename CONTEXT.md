@@ -19,6 +19,7 @@
 Базовые шаблоны / важные файлы:
 - TotalNews16.py — базовый шаблон для сбора и отправки новостей (сохранён в репозитории): https://github.com/OlegXXXXX7/TOTALNEWS/blob/main/TotalNews16.py (commit: 7e58ce56b9bdc7be98dc3cd8bc2168baa1a834f2)
 https://github.com/OlegXXXXX7/TOTALNEWS/blob/main/TotalNews19.py
+- TotalNews19.py — базовый шаблон: https://github.com/OlegXXXXX7/TOTALNEWS/blob/main/TotalNews19.py
 
 Ключевые требования (не менять без обсуждения):
 - ТР1: [описание]
