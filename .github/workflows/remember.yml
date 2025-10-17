@@ -1,5 +1,45 @@
-- name: Checkout
-  uses: actions/checkout@v4
-  with:
-    token: ${{ secrets.MyToken }}
-    persist-credentials: true
+name: Remember
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  update-context:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MyToken }}
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Run updater script
+        run: |
+          python3 scripts/update_context.py
+
+      - name: Configure git to push using PAT and commit changes
+        env:
+          REPO: ${{ github.repository }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Use PAT for authentication to ensure push succeeds
+          git remote set-url origin https://x-access-token:${{ secrets.MyToken }}@github.com/${REPO}.git
+          git add CONTEXT.md sessions || true
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update CONTEXT.md and add session record for TotalNews19"
+            git push origin HEAD:main
+          fi
